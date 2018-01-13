@@ -36,10 +36,6 @@ $("#submit_train").on("click", function(event)
   var destination = $("#inp_dest").val().trim();
   var arrival     = $("#inp_arrival").val().trim();
   var frequency   = $("#inp_freq").val().trim();
-  // NOTE - the use of the Unix epoch prevents start years from before the start of the epoch
-  //        those years work fine if the epoch is not used
-  // var startDate = moment($("#startDate").val().trim(), "DD/MM/YY").format("X"); <> moment.unix(child.val().startDate).format("MM/DD/YY")
-  // var monthlyRate = $("#monthlyRate").val().trim();
   // log data
   console.log("train: ", train, "destination: ", destination, "arrival: ", arrival, "frequency: ", frequency);
   // store data
@@ -52,28 +48,27 @@ $("#submit_train").on("click", function(event)
     date_added: firebase.database.ServerValue.TIMESTAMP,
   });
   // clear form
-  // $("#name").val("");
-  // $("#role").val("");
-  // $("#startDate").val("");
-  // $("#monthlyRate").val("");
+  $("#inp_train").val("");
+  $("#inp_dest").val("");
+  $("#inp_arrival").val("");
+  $("#inp_freq").val("");
 });
 
 // Firebase on childAdded event
-timetable_ref.orderByChild("dateA_added").on("child_added", function(child)
+timetable_ref.orderByChild("first_arrival").on("child_added", function(child)
 {
+  var train = child.val();
   // log child
-  console.log(child.val());
-  // calculate months worked and total billed
-  // var monthsWorked = moment().diff(moment.unix(child.val().startDate, "X"), "months");
-  // var totalBilled = monthsWorked * child.val().monthlyRate;
-  // console.log("monthsWorked", monthsWorked, "totalBilled", totalBilled);
+  console.log(train);
+  // calculate variable values
+  var values = calc_train(train);
   // build the table row
   var tr = $('<tr>'
-            + '<td>' + child.val().train + '</td>'
-            + '<td>' + child.val().destination + '</td>'
-            + '<td>' + child.val().frequency + '</td>'
-            + '<td>' + child.val().first_arrival + '</td>'
-            + '<td>' + 0 + '</td></tr>'
+            + '<td>' + train.train + '</td>'
+            + '<td>' + train.destination + '</td>'
+            + '<td>' + train.frequency + '</td>'
+            + '<td>' + moment(values.next).format("HH:mm") + '</td>'
+            + '<td>' + values.eta + '</td></tr>'
             );
   // Writes the saved value from firebase to our display
   $("#additionalRows").prepend(tr);
@@ -81,3 +76,30 @@ timetable_ref.orderByChild("dateA_added").on("child_added", function(child)
 { // Handles firebase failure if it occurs
   console.log("The read failed: " + errorObject.code);
 });
+
+//
+// Utility Functions
+//
+
+// calculate train times
+function calc_train(train)
+{
+  var freq = train.frequency
+  // first arrival time - subtract 1 day to fudge number for the calculation
+  var first = moment(train.first_arrival, "HH:mm").subtract(1, "days");
+  console.log("first:", moment(first).format("HH:mm"));
+  // time difference
+  var diff = moment().diff(moment(first), "minutes");
+  console.log("diff (min):", diff);
+  // modulus
+  var modulus = diff % freq;
+  console.log("modulus:", modulus);
+  // arrival
+  var eta = freq - modulus;
+  console.log("arrival (min):" + eta);
+  // Next Train
+  var next_train = moment().add(eta, "minutes");
+  console.log("arrival time: " + moment(next_train).format("HH:mm"));
+
+  return {"next": next_train, "eta": eta};
+}
