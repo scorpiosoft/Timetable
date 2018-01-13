@@ -42,6 +42,20 @@ firebase.auth().getRedirectResult().then(function(result)
   console.log("ERROR:", errorCode, errorMessage, "User email:", email, "Credential:", credential);
 });
 
+// listen for user change
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    // User is signed in.
+    console.log("User:", user);
+  } else {
+    // No user is signed in.
+  }
+});
+
+//
+// Event Functions
+//
+
 // on click event for submit button
 $("#submit").on("click", function(event)
 {
