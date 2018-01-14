@@ -5,7 +5,8 @@
 //
 
 // on click event for clicking the Login/Logout button
-$('#google_sign_in').on('click', function(event)
+// $('#google_sign_in').on('click', function(event)
+function toggleSignIn()
 {
   if (!firebase.auth().currentUser)
   {
@@ -21,7 +22,7 @@ $('#google_sign_in').on('click', function(event)
   }
   // disble the button
   $('#google_sign_in').disabled = true;
-});
+}
 
 //
 // initApp handles setting up UI event listeners and registering Firebase auth listeners:
@@ -83,9 +84,11 @@ $('#google_sign_in').on('click', function(event)
     }
     $('#google_sign_in').disabled = false;
   });
+
+  document.getElementById('google_sign_in').addEventListener('click', toggleSignIn, false);
 // }
 
-// window.onload = function() 
+// window.onload = function()
 // {
 //   initApp();
 // };

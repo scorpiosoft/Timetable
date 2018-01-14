@@ -1,22 +1,22 @@
 // Initialize Firebase
-var config =
-{
-  apiKey: "AIzaSyANDywSVU9hHax6WE8PMuaiDK3qdTdsj78",
-  authDomain: "fir-21155.firebaseapp.com",
-  databaseURL: "https://fir-21155.firebaseio.com",
-  projectId: "fir-21155",
-  storageBucket: "fir-21155.appspot.com",
-  messagingSenderId: "614199486533"
-};
 // var config =
-// {
-//   apiKey: "AIzaSyAmo21fRAZj2Qob-T3rWAe2dSI2dLJ9i0c",
-//   authDomain: "fullstackproje.firebaseapp.com",
-//   databaseURL: "https://fullstackproje.firebaseio.com",
-//   projectId: "fullstackproje",
-//   storageBucket: "fullstackproje.appspot.com",
-//   messagingSenderId: "632114626173"
+// { // demo no auth db
+//   apiKey: "AIzaSyANDywSVU9hHax6WE8PMuaiDK3qdTdsj78",
+//   authDomain: "fir-21155.firebaseapp.com",
+//   databaseURL: "https://fir-21155.firebaseio.com",
+//   projectId: "fir-21155",
+//   storageBucket: "fir-21155.appspot.com",
+//   messagingSenderId: "614199486533"
 // };
+var config =
+{ // 'production' db with google auth
+  apiKey: "AIzaSyAmo21fRAZj2Qob-T3rWAe2dSI2dLJ9i0c",
+  authDomain: "fullstackproje.firebaseapp.com",
+  databaseURL: "https://fullstackproje.firebaseio.com",
+  projectId: "fullstackproje",
+  storageBucket: "fullstackproje.appspot.com",
+  messagingSenderId: "632114626173"
+};
 firebase.initializeApp(config);
 // grab handle to entire database
 // var database = firebase.database();
@@ -55,7 +55,7 @@ $("#submit_train").on("click", function(event)
 });
 
 // Firebase on childAdded event
-timetable_ref.orderByChild("first_arrival").on("child_added", function(child)
+timetable_ref.orderByChild("train").on("child_added", function(child)
 {
   var train = child.val();
   // log child
@@ -71,7 +71,7 @@ timetable_ref.orderByChild("first_arrival").on("child_added", function(child)
             + '<td>' + values.eta + '</td></tr>'
             );
   // Writes the saved value from firebase to our display
-  $("#additionalRows").prepend(tr);
+  $("#additionalRows").append(tr);
 }, function(errorObject)
 { // Handles firebase failure if it occurs
   console.log("The read failed: " + errorObject.code);
