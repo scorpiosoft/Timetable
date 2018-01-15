@@ -10,6 +10,7 @@ function toggleSignIn()
 {
   if (!firebase.auth().currentUser)
   {
+    console.log("attempting login");
     // auth provider
     var provider = new firebase.auth.GoogleAuthProvider();
     // add a scope to the provider
@@ -17,11 +18,17 @@ function toggleSignIn()
     // sign in via redirect
     firebase.auth().signInWithRedirect(provider);
   } else {
+    console.log("calling .signOut()");
     // signout
-    firebase.auth().signOut();
+    firebase.auth().signOut().then(function()
+    { // sign-out successful
+    }).catch(function(error) {
+      // an error happened
+      console.log("ERROR signing out:", error);
+    });
   }
   // disble the button
-  $('#google_sign_in').disabled = true;
+  $('#google_sign_in').prop("disabled", true);
 }
 
 //
@@ -31,8 +38,8 @@ function toggleSignIn()
 //  - firebase.auth().getRedirectResult():  This promise completes when the user gets back from
 //    the auth redirect flow.  It is where you can get the OAuth access token from the IDP.
 //
-// function initApp()
-// {
+function initApp()
+{
   // result from Redirect auth flow
   firebase.auth().getRedirectResult().then(function(result)
   {
@@ -65,8 +72,10 @@ function toggleSignIn()
   // Listening for auth state changes.
   firebase.auth().onAuthStateChanged(function(user)
   {
+    console.log("in onAuthStateChanged()");
     if (user)
     {
+      console.log("user logged in");
       // user is signed in
       var displayName = user.displayName;
       var email = user.email;
@@ -79,16 +88,17 @@ function toggleSignIn()
       // toggle text in button
       $('#google_sign_in').text('Sign out ' + displayName);
     } else {
+      console.log("user logged out");
       // user is signed out
-      $('#google_sign_in').textContent = 'Sign in with Google';
+      $('#google_sign_in').text('Sign in with Google');
     }
-    $('#google_sign_in').disabled = false;
+    $('#google_sign_in').prop("disabled", false);
   });
 
   document.getElementById('google_sign_in').addEventListener('click', toggleSignIn, false);
-// }
+}
 
-// window.onload = function()
-// {
-//   initApp();
-// };
+window.onload = function()
+{
+  initApp();
+};
