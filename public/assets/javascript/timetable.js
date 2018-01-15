@@ -1,4 +1,11 @@
+// TODO - add function to add a destination to a train
+// TODO - add function to update ETA
+// TODO - add edit function
+// TODO - add delete function
+
 // Initialize Firebase
+// Project Console: https://console.firebase.google.com/project/fullstackproje/overview
+
 // var config =
 // { // demo no auth db
 //   apiKey: "AIzaSyANDywSVU9hHax6WE8PMuaiDK3qdTdsj78",
