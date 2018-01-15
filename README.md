@@ -8,11 +8,11 @@ Hosting URL: https://fullstackproje.firebaseapp.com
 
 ## Built With
 
-jQuery
-Bootstrap
-Firebase
-Moment.js
-Google Fonts
+* jQuery
+* Bootstrap
+* Firebase
+* Moment.js
+* Google Fonts
 
 ### Completed Bonus Features
 
